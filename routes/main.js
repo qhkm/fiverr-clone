@@ -8,7 +8,12 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/gigs', (req, res) => {
-    res.render('main/gigs');
+    Gig
+        .find({
+            owner: req.user._id
+        }, function (err, gigs) {
+            res.render('main/gigs', {gigs: gigs})
+        })
 });
 
 router
