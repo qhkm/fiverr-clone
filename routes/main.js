@@ -3,6 +3,7 @@ const Gig = require('../models/gig');
 const User = require('../models/user');
 const async = require('async');
 
+//GET request to /
 router.get('/', (req, res, next) => {
     Gig
         .find({}, function (err, gigs) {
@@ -10,6 +11,7 @@ router.get('/', (req, res, next) => {
         })
 });
 
+//GET request to /gigs
 router.get('/gigs', (req, res) => {
     Gig
         .find({
@@ -19,6 +21,7 @@ router.get('/gigs', (req, res) => {
         })
 });
 
+//Handle GET and POST request to /add-new-gig
 router
     .route('/add-new-gig')
     .get((req, res) => {
@@ -47,5 +50,15 @@ router
             }
         ]);
     });
+
+//Handle single gig req
+router.get('/service_detail/:id', (req, res, next) => {
+    Gig
+        .findOne({_id: req.params.id})
+        .populate('owner')
+        .exec(function (err, gig) {
+            res.render('main/service_detail', {gig: gig});
+        })
+})
 
 module.exports = router;
