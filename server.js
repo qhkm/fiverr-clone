@@ -69,9 +69,11 @@ function onAuthorizeFail(data, message, error, accept) {
 require('./realtime/io')(io);
 
 const mainRoutes = require('./routes/main');
+const orderRoutes = require('./routes/order');
 const userRoutes = require('./routes/user');
 
 app.use(mainRoutes);
+app.use(orderRoutes);
 app.use(userRoutes);
 
 http.listen(config.port, (err) => {
