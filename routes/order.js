@@ -72,4 +72,26 @@ router.get('/users/:userId/orders/:orderId', (req, res) => {
         });
 })
 
+router.get('/users/:id/manage_orders', (req, res, next) => {
+    Order
+        .find({seller: req.user._id})
+        .populate('buyer')
+        .populate('seller')
+        .populate('gig')
+        .exec((err, orders) => {
+            res.render('order/order-seller', {orders: orders});
+        });
+});
+
+router.get('/users/:id/orders', (req, res, next) => {
+    Order
+        .find({buyer: req.user._id})
+        .populate('buyer')
+        .populate('seller')
+        .populate('gig')
+        .exec((err, orders) => {
+            res.render('order/order-buyer', {orders: orders});
+        });
+});
+
 module.exports = router;
