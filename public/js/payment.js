@@ -39,18 +39,6 @@ card.addEventListener('change', function (event) {
     }
 });
 
-function stripeTokenHandler(token) {
-    let form = document.getElementById('payment-form');
-    let hiddenInput = document.createElement('input');
-    hiddenInput.setAttribute('type', 'hidden');
-    hiddenInput.setAttribute('name', 'stripeToken');
-    hiddenInput.setAttribute('value', token.id);
-    form.appendChild(hiddenInput);
-    form.submit();
-}
-
-/* <input type="hidden" name="stripeToken" value="token.id"/> */
-
 // Handle form submission.
 var form = document.getElementById('payment-form');
 form.addEventListener('submit', function (event) {
