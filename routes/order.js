@@ -17,4 +17,10 @@ router.get('/checkout/single-package/:id', (req, res, next) => {
         });
 });
 
+router
+    .route('/payment')
+    .get((req, res, next) => {
+        res.render('checkout/payment');
+    });
+
 module.exports = router;
