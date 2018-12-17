@@ -3,15 +3,15 @@ const Schema = mongoose.Schema
 
 const OrderSchema = new Schema({
     buyer: {
-        type: Type.Schema.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User'
     },
     seller: {
-        type: Type.Schema.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User'
     },
     gig: {
-        type: Type.Schema.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Gig'
     },
     messages: [
@@ -20,7 +20,7 @@ const OrderSchema = new Schema({
                 type: String
             },
             creator: {
-                type: Type.Schema.ObjectId,
+                type: Schema.Types.ObjectId,
                 ref: 'User'
             },
             date: {

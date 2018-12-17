@@ -1,0 +1,51 @@
+<div class="container">
+    <div class="app row clearfix">
+
+        <div class="col-sm-4">
+            <input type="hidden" id="userId" value="{{ user._id }}" />
+            <div class="row">
+                <div class="sidebar right">
+                    <div class="overlay">
+                        <div class="profile">
+
+                            <div class="pic">
+                                <img src="{{order.gig.picture}}" class="center-block img-responsive">
+                            </div>
+
+                            <div class="info">
+                                <h3 class="title name">{{order.gig.title}}</h3>
+                                <p class="bio">
+                                    {{order.gig.about}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="chatbox">
+
+                    <div class="chat-msgs clearfix" id="chatMsgs">
+                        Here all our chat messages
+                    </div>
+
+                    <div class="compose">
+                        <form action="#" id="sendMessage" class="form-group">
+                            <div class="input-group">
+                                <a href="#" class="input-group-addon"><i class="fa fa-plus"></i></a>
+                                <input class="form-control" type="text" id="message" placeholder="Type something here">
+                                <a href="#" class="input-group-addon"><i class="fa fa-smile-o"></i></a>
+                                <input type="submit" class="form-control" value="Send">
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Gig = require('../models/gig');
 const stripe = require('stripe')('sk_test_VBo5DZeMx19wmpLPcJ49esfs');
+const Order = require('../models/order');
 const fee = 3.15;
 
 router.get('/checkout/single-package/:id', (req, res, next) => {
@@ -41,11 +42,34 @@ router
                     .create({amount: price, currency: 'usd', customer: source.customer});
             })
             .then((charge) => {
-                res.redirect('/');
+                var order = new Order();
+                order.buyer = req.user._id;
+                order.seller = gig.owner;
+                order.gig = gig._id;
+                order.save((err) => {
+                    req.session.gig = null;
+                    req.session.price = null;
+                    res.redirect('/users/' + req.user._id + '/orders/' + order._id);
+                })
             })
             .catch((err) => {
                 // Deal with an error
             });
-    })
+    });
+
+router.get('/users/:userId/orders/:orderId', (req, res) => {
+    req.session.orderId = req.params.orderId;
+    Order
+        .findOne({_id: req.params.orderId})
+        .populate('buyer')
+        .populate('seller')
+        .populate('gig')
+        .exec((err, order) => {
+            res.render('order/order-room', {
+                layout: 'chat-layout',
+                order: order
+            });
+        });
+})
 
 module.exports = router;
