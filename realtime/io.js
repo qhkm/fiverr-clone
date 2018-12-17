@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const Order = require('../models/gig');
+const Message = require('../models/message');
 const async = require('async');
 
 module.exports = function (io) {
@@ -14,8 +15,8 @@ module.exports = function (io) {
 
       socket.join(orderId);
 
-      socket.on('chatTo', data => {
-        async.parallel([
+      socket.on('chatTo', (data) => {
+        async.waterfall([
           function (callback) {
             io
               . in(orderId)
@@ -25,12 +26,28 @@ module.exports = function (io) {
                 senderImage: user.photo,
                 senderId: user._id
               });
+
+            var message = new Message();
+            message.owner = user._id;
+            message.content = data.message,
+            message.save(function (err) {
+              callback(err, message);
+            })
           },
 
-          function (callback) {
-            //Save order object
+          function (message, callback) {
+            Order
+              .update({
+                _id: orderId
+              }, {
+                $push: {
+                  messages: message._id
+                }
+              }, function (err, count) {
+                console.log(count);
+              })
           }
-        ])
+        ]);
       })
 
     });
