@@ -29,7 +29,23 @@
                 <div class="chatbox">
 
                     <div class="chat-msgs clearfix" id="chatMsgs">
-
+                        {{#each order.messages }}
+                        {{#if_equals ../user._id owner._id }}
+                        <div class="message right">
+                            <span class="pic"><img src="{{ owner.photo }}" /></span>
+                            <div class="bubble right">
+                                <p>{{ content }}</p>
+                            </div>
+                        </div>
+                        {{ else }}
+                        <div class="message left">
+                            <span class="pic"><img src="{{ owner.photo }}" /></span>
+                            <div class="bubble left">
+                                <p>{{ content }}</p>
+                            </div>
+                        </div>
+                        {{/if_equals }}
+                        {{/each}}
                     </div>
 
                     <div class="compose">

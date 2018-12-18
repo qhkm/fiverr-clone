@@ -11,8 +11,9 @@
                         <thead>
                             <tr>
                                 <th>Gig</th>
+                                <th>Buyer</th>
                                 <th>Price</th>
-                                <th>Status</th>
+                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -22,9 +23,10 @@
                                     <img class="order-image-my-gig" src={{gig.picture}} alt="...">
                                     <span>{{gig.title}}</span>
                                 </td>
+                                <td>{{buyer.name}}</td>
                                 <td>${{gig.price}}</td>
                                 <td><button class="btn btn-warning">In progress</button></td>
-
+                                
                                 <td><a href="/users/{{ seller._id }}/orders/{{ _id }}" class="btn btn-primary">Chat
                                         with
                                         Buyer</a></td>

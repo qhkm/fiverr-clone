@@ -57,20 +57,32 @@ router
             });
     });
 
-router.get('/users/:userId/orders/:orderId', (req, res) => {
+//Chat page
+router.get('/users/:userId/orders/:orderId', (req, res, next) => {
     req.session.orderId = req.params.orderId;
     Order
         .findOne({_id: req.params.orderId})
         .populate('buyer')
         .populate('seller')
         .populate('gig')
-        .exec((err, order) => {
+        .deepPopulate('messages.owner')
+        .exec(function (err, order) {
+            console.log(order);
             res.render('order/order-room', {
                 layout: 'chat-layout',
-                order: order
+                order: order,
+                helpers: {
+                    if_equals: function (a, b, opts) {
+                        if (a.equals(b)) {
+                            return opts.fn(this);
+                        } else {
+                            return opts.inverse(this);
+                        }
+                    }
+                }
             });
         });
-})
+});
 
 router.get('/users/:id/manage_orders', (req, res, next) => {
     Order
