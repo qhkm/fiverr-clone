@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="hero-heading">
-				Service for lean entrepreneur <br/>
+				Service for lean entrepreneur <br />
 				Find it on Threely.
 				<p>Browse. Buy. Done. </p>
 			</div>
@@ -42,18 +42,20 @@
 				</h3>
 			</div>
 		</div>
+		{{#each gigs}}
 		<div class="col-md-3">
 			<div class="gig-card">
+				<a href="/service_detail/{{ _id }}"><img src="/img/copywrite.jpg" /></a>
 
-				<img src="/img/copywrite.jpg" />
 				<h4>
-					I will copywrite for your website
+					{{title}}
 				</h4>
 				<h3>
-					$3
+					${{price}}
 				</h3>
 			</div>
 		</div>
+		{{/each}}
 		<div class="col-md-3">
 			<div class="gig-card">
 
