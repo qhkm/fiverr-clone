@@ -4,6 +4,9 @@ const User = require('../models/user');
 const Promocode = require('../models/promocode');
 const async = require('async');
 
+const algoliasearch = require('algoliasearch')
+var client = algoliasearch('B208GQV2JF', '9f799c2601799fed175ca3b4bd9bb598');
+var index = client.initIndex('GigSchema');
 
 //GET request to /
 router.get('/', (req, res, next) => {
@@ -12,6 +15,23 @@ router.get('/', (req, res, next) => {
             res.render('main/home', {gigs: gigs})
         })
 });
+
+router
+    .route('/search')
+    .get((req, res) => {
+        if (req.query.q) {
+            index
+                .search(req.query.q, function (err, content) {
+                    res.render('main/search_results', {
+                        content: content,
+                        search_result: req.query.q
+                    });
+                })
+        }
+    })
+    .post((req, res) => {
+        res.redirect('/search/?q=' + req.body.search_input)
+    })
 
 //GET request to /gigs
 router.get('/gigs', (req, res) => {
@@ -64,27 +84,30 @@ router.get('/service_detail/:id', (req, res, next) => {
 })
 
 //Handle Promo code API
-router.get('/api/add-promocode', (req,res) => {
+router.get('/api/add-promocode', (req, res) => {
     var promocode = new Promocode();
     promocode.name = "testcoupon";
     promocode.discount = 0.4;
-    promocode.save(function(err){
+    promocode.save(function (err) {
         res.json("Successfull")
     })
 })
 
-router.post('/promocode', (req,res) => {
+//Handle Post promocode API
+router.post('/promocode', (req, res) => {
     var promocode = req.body.promocode;
     var totalPrice = req.session.price;
-    Promocode.findOne({ name : promocode }, function(err, foundCode ) {
-        if(foundCode) {
-        var newPrice = foundCode.discount * totalPrice;
-        newPrice = totalPrice - newPrice;
-        req.session.price = newPrice;
-        res.json(newPrice);
-    } else {
-        res.json(0)
-    }
+    Promocode.findOne({
+        name: promocode
+    }, function (err, foundCode) {
+        if (foundCode) {
+            var newPrice = foundCode.discount * totalPrice;
+            newPrice = totalPrice - newPrice;
+            req.session.price = newPrice;
+            res.json(newPrice);
+        } else {
+            res.json(0)
+        }
     });
 });
 
