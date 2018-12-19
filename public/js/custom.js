@@ -54,4 +54,37 @@ $(function () {
             });
         }
     });
+
+    $('.remove-item').on('click', function () {
+        var gig_id = $(this).attr('id');
+        console.log(gig_id);
+        if (gig_id === '') {
+            return false;
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/remove-item',
+                data: {
+                    gig_id: gig_id
+                },
+                success: function (data) {
+                    var subTotal = parseInt($('#subTotal').html());
+                    subTotal -= data.price;
+                    if (subTotal === 0) {
+                        $('.cart').empty();
+                        $('.cart').html('Cart is empty');
+
+                    } else {
+                        $('#subTotal').html(subTotal);
+                        $('#totalPrice').html(data.totalPrice);
+                    }
+
+                    badge -= 1;
+                    $('.badge').html(badge);
+                    $('#' + gig_id).remove();
+                }
+            });
+        }
+    });
+
 });
