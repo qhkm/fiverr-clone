@@ -20,6 +20,37 @@ router.get('/checkout/single-package/:id', (req, res, next) => {
         });
 });
 
+//List all items in the cart
+router.get('/checkout/process_cart', (req, res) => {
+    User
+        .findOne({_id: req.user._id})
+        .populate('cart')
+        .exec(function (err, user) {
+            console.log(user.cart);
+            var price = 0;
+            var cartIsEmpty = true;
+            if (user.cart.length > 0) {
+                user
+                    .cart
+                    .map(function (item) {
+                        price += item.price;
+                    });
+                var totalPrice = price + fee;
+            } else {
+                cartIsEmpty = false;
+            }
+
+            req.session.price = totalPrice;
+            req.session.gig = user.cart;
+            res.render('order/cart', {
+                foundUser: user,
+                totalPrice: totalPrice,
+                sub_total: price,
+                cartIsEmpty: cartIsEmpty
+            })
+        })
+});
+
 router
     .route('/payment')
     .get((req, res, next) => {
@@ -107,18 +138,17 @@ router.get('/users/:id/orders', (req, res, next) => {
         });
 });
 
-router.post('/add-to-cart', (req, res) => {
+router.post('/add-to-cart', (req, res, next) => {
     const gigId = req.body.gig_id;
     User.update({
         _id: req.user._id
     }, {
         $push: {
             cart: gigId
-        },
-        function (err, count) {
-            res.json("Added to cart");
         }
-    })
-})
+    }, function (err, count) {
+        res.json("Added to cart");
+    });
+});
 
 module.exports = router;
