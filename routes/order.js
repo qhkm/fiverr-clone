@@ -138,6 +138,7 @@ router.get('/users/:id/orders', (req, res, next) => {
         });
 });
 
+//Add item to cart
 router.post('/add-to-cart', (req, res, next) => {
     const gigId = req.body.gig_id;
     User.update({
@@ -149,6 +150,35 @@ router.post('/add-to-cart', (req, res, next) => {
     }, function (err, count) {
         res.json("Added to cart");
     });
+});
+
+//Remove item from cart
+router.post('remove-item', (req, res, next) => {
+    console.log(req.body);
+    const gigId = req.body.gig_id;
+    async.waterfall([
+        function (callback) {
+            Gig
+                .findOne({
+                    _id: gigId
+                }, function (err, gig) {
+                    callback(err, gig);
+                })
+        },
+        function (gig, callback) {
+            User
+                .update({
+                    _id: req.user._id
+                }, {
+                    $pull: {
+                        cart: gigId
+                    }
+                }, function (err, count) {
+                    var totalPrice = req.session.price - gig.price;
+                    res.json({totalPrice});
+                });
+        }
+    ]);
 });
 
 module.exports = router;
