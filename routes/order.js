@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Gig = require('../models/gig');
+const User = require('../models/user');
 const stripe = require('stripe')('sk_test_VBo5DZeMx19wmpLPcJ49esfs');
 const Order = require('../models/order');
 const fee = 3.15;
@@ -105,5 +106,19 @@ router.get('/users/:id/orders', (req, res, next) => {
             res.render('order/order-buyer', {orders: orders});
         });
 });
+
+router.post('/add-to-cart', (req, res) => {
+    const gigId = req.body.gig_id;
+    User.update({
+        _id: req.user._id
+    }, {
+        $push: {
+            cart: gigId
+        },
+        function (err, count) {
+            res.json("Added to cart");
+        }
+    })
+})
 
 module.exports = router;
