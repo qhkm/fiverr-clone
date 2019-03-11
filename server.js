@@ -11,9 +11,10 @@ const hbs = require('hbs');
 const expressHbs = require('express-handlebars');
 const passportSocketIo = require('passport.socketio');
 
-const config = require('./config/secret');
+const dotenv = require('dotenv').config();
+
 const sessionStore = new MongoStore({
-  url: config.database,
+  url: process.env.DATABASE,
   autoReconnect: true
 });
 
@@ -24,12 +25,12 @@ const io = require('socket.io')(http);
 const sessionMiddleware = session({
   resave: true,
   saveUninitialized: true,
-  secret: config.secret,
-  store: new MongoStore({ url: config.database, autoReconnect: true })
+  secret: process.env.SECRET,
+  store: new MongoStore({ url: process.env.DATABASE, autoReconnect: true })
 });
 
 mongoose.connect(
-  config.database,
+  process.env.DATABASE,
   {
     useMongoClient: true
   },
@@ -58,7 +59,7 @@ io.use(
   passportSocketIo.authorize({
     cookieParser: cookieParser, // the same middleware you registrer in express
     key: 'connect.sid', // the name of the cookie where express/connect stores its session_id
-    secret: config.secret, // the session_secret to parse the cookie
+    secret: process.env.SECRET, // the session_secret to parse the cookie
     store: sessionStore, // we NEED to use a sessionstore. no memorystore please
     success: onAuthorizeSuccess, // *optional* callback on success - read more below
     fail: onAuthorizeFail // *optional* callback on fail/error - read more below
@@ -89,7 +90,7 @@ app.use(mainRoutes);
 app.use(orderRoutes);
 app.use(userRoutes);
 
-http.listen(config.port, err => {
+http.listen(process.env.PORT, err => {
   if (err) console.log(err);
-  console.log(`Running on port ${config.port}`);
+  console.log(`Running on port ${process.env.PORT}`);
 });
